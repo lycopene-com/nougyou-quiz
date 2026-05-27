@@ -108,8 +108,8 @@ body{font-family:'Zen Maru Gothic',sans-serif;background:#0a0515;color:#fff;touc
 .enemy-hp-fill.danger{background:linear-gradient(90deg,#f44336,#ff5722)!important;animation:hpFlash .5s infinite}
 @keyframes hpFlash{0%,100%{opacity:1}50%{opacity:.5}}
 
-.question-zone{flex:0 0 auto;padding:12px 16px;background:rgba(255,255,255,.1);border-radius:12px;margin:8px 16px}
-.question-text{font-size:clamp(.9rem,3vw,1.05rem);line-height:1.6;color:#e0e0e0;margin-bottom:6px}
+.question-zone{flex:0 0 auto;padding:12px 16px;background:rgba(255,255,255,.95);border-radius:12px;margin:8px 16px;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.question-text{font-size:clamp(.9rem,3vw,1.05rem);line-height:1.6;color:#1a1a1a;margin-bottom:6px;font-weight:500}
 .question-image{max-width:100%;max-height:180px;border-radius:6px;margin:4px 0;object-fit:contain}
 .question-images-row{display:flex;gap:6px;justify-content:center;margin:4px 0}
 .question-images-row img{max-width:48%;max-height:150px;border-radius:6px;object-fit:contain}
@@ -487,7 +487,7 @@ body{font-family:'Zen Maru Gothic',sans-serif;background:#0a0515;color:#fff;touc
 <div id="battle-screen" class="screen">
 <div class="status-bar">
 <div class="status-left"><span class="level-info" id="levelInfo">LV.1</span> <span class="xp-bar-wrap"><span class="xp-bar-fill" id="xpFill" style="width:0%"></span></span></div>
-<div class="status-right"><span class="q-count" id="qCount">Q.1/25</span> <span class="timer-text" id="timerText">&#9201;&#65039; 15s</span> <span class="combo-display" id="comboDisplay"></span></div>
+<div class="status-right"><span class="q-count" id="qCount">Q.1/25</span> <span class="timer-text" id="timerText">&#9201;&#65039; 30s</span> <span class="combo-display" id="comboDisplay"></span></div>
 </div>
 <div class="stage-label" id="stageLabel">Stage1: &#12398;&#12393;&#12363;&#12394;&#36786;&#22580;</div>
 <div class="battle-area" id="battleArea">
@@ -622,7 +622,7 @@ let state = {
   wrong: 0,
   totalQ: 0,
   timer: null,
-  timeLeft: 15,
+  timeLeft: 30,
   startTime: 0,
   currentMonster: null,
   wrongQuestions: [],
@@ -792,7 +792,7 @@ function beginBattle(pool, stageIdx, label) {
   state.wrong = 0;
   state.totalQ = pool.length;
   state.timer = null;
-  state.timeLeft = 15;
+  state.timeLeft = 30;
   state.startTime = Date.now();
   state.currentMonster = null;
   state.wrongQuestions = [];
@@ -839,10 +839,10 @@ function showQuestion() {
   ec.innerHTML = '<div class="enemy-sprite" id="enemySprite">' + state.currentMonster.html + '</div>';
 
   // HP bar
-  state.timeLeft = 15;
+  state.timeLeft = 30;
   $('enemyHp').style.width = '100%';
   $('enemyHp').classList.remove('danger');
-  $('timerText').textContent = '⏱️ 15s';
+  $('timerText').textContent = '⏱️ 30s';
   $('timerText').style.color = '#ff9800';
 
   // Question text
@@ -895,7 +895,7 @@ function getStageMonsters(idx) {
 // ===== TIMER =====
 function startTimer() {
   clearInterval(state.timer);
-  state.timeLeft = 15;
+  state.timeLeft = 30;
   state.timer = setInterval(() => {
     state.timeLeft -= 0.1;
     if (state.timeLeft <= 0) {
@@ -903,10 +903,10 @@ function startTimer() {
       clearInterval(state.timer);
       if (!state.answered) handleTimeout();
     }
-    const pct = (state.timeLeft / 15) * 100;
+    const pct = (state.timeLeft / 30) * 100;
     $('enemyHp').style.width = pct + '%';
     $('timerText').textContent = '⏱️ ' + Math.ceil(state.timeLeft) + 's';
-    if (state.timeLeft <= 5) {
+    if (state.timeLeft <= 10) {
       $('enemyHp').classList.add('danger');
       $('timerText').style.color = '#f44336';
     }
@@ -950,8 +950,8 @@ function showCorrectAnswer(q, btn, btns) {
   state.catStats[cat].total++;
 
   let xpGain = 10;
-  if (state.timeLeft >= 10) xpGain += 10;
-  else if (state.timeLeft >= 5) xpGain += 5;
+  if (state.timeLeft >= 20) xpGain += 10;
+  else if (state.timeLeft >= 10) xpGain += 5;
   if (state.streak >= 10) xpGain += 20;
   else if (state.streak >= 5) xpGain += 10;
   else if (state.streak >= 3) xpGain += 5;
@@ -1268,7 +1268,7 @@ function startRevenge() {
   state.wrong = 0;
   state.totalQ = pool.length;
   state.timer = null;
-  state.timeLeft = 15;
+  state.timeLeft = 30;
   state.startTime = Date.now();
   state.currentMonster = null;
   state.wrongQuestions = [];
