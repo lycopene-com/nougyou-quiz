@@ -791,13 +791,13 @@ function renderStageSelect() {
   STAGE_DEFS.forEach((sd, i) => {
     const isFinal = i === 5;
     const isCleared = cleared.includes(i);
-    const isUnlocked = i === 0 || i === 6 || cleared.includes(i - 1);
+    const isUnlocked = i === 0 || sd.name === '特別試験場' || cleared.includes(i - 1);
     const locked = !isUnlocked && !isCleared;
     const statusText = isCleared ? '⭐ クリア済' : (isUnlocked ? '🔥 挑戦可能' : '🔒 ロック中');
     const statusCls = isCleared ? 'cleared' : (isUnlocked ? 'current' : 'locked-text');
     const best = getBestScore(i);
     const bestText = best ? ' (最高: ' + best.pct + '%)' : '';
-    const stageNum = isFinal ? 'FINAL' : (i === 6 ? 'EX' : 'Stage ' + (i+1));
+    const stageNum = isFinal ? 'FINAL' : (sd.name === '特別試験場' ? 'EX' : 'Stage ' + (i+1));
 
     html += '<div class="stage-card ' + (locked ? 'locked' : '') + (isCleared ? ' cleared' : '') + '" data-stage="' + i + '" ' +
       (locked ? '' : 'onclick="selectStage(' + i + ')"') + '>' +
@@ -819,7 +819,7 @@ function renderFloorSelect() {
   let html = '';
   STAGE_DEFS.forEach((sd, i) => {
     const isFinal = i === 5;
-    const stageNum = isFinal ? 'FINAL' : (i === 6 ? 'EX' : 'Stage ' + (i+1));
+    const stageNum = isFinal ? 'FINAL' : (sd.name === '特別試験場' ? 'EX' : 'Stage ' + (i+1));
     const best = getBestScore(i);
     const bestText = best ? ' (最高: ' + best.pct + '%)' : '';
     html += '<div class="stage-card" data-stage="' + i + '" onclick="selectFloor(' + i + ')">' +
@@ -841,7 +841,7 @@ function selectStage(idx) {
   const pool = [...STAGE_QUESTIONS[idx]];
   const sd = STAGE_DEFS[idx];
   const isFinal = idx === 5;
-  const label = (isFinal ? 'FINAL' : (idx === 6 ? 'EX' : 'Stage' + (idx+1))) + ': ' + sd.name;
+  const label = (isFinal ? 'FINAL' : (sd.name === '特別試験場' ? 'EX' : 'Stage' + (idx+1))) + ': ' + sd.name;
   beginBattle(pool, idx, label);
 }
 
@@ -850,7 +850,7 @@ function selectFloor(idx) {
   const pool = shuffle([...STAGE_QUESTIONS[idx]]);
   const sd = STAGE_DEFS[idx];
   const isFinal = idx === 5;
-  const label = (isFinal ? 'FINAL' : (idx === 6 ? 'EX' : 'Stage' + (idx+1))) + ': ' + sd.name + ' (練習)';
+  const label = (isFinal ? 'FINAL' : (sd.name === '特別試験場' ? 'EX' : 'Stage' + (idx+1))) + ': ' + sd.name + ' (練習)';
   beginBattle(pool, idx, label);
 }
 
@@ -1443,7 +1443,7 @@ function startRevenge() {
     $('battle-screen').style.background = STAGE_DEFS[savedStage].bg;
     const sd = STAGE_DEFS[savedStage];
     const isFinal = savedStage === 5;
-    $('stageLabel').textContent = (isFinal ? 'FINAL' : (savedStage === 6 ? 'EX' : 'Stage' + (savedStage+1))) + ': ' + sd.name + ' (リベンジR' + (round+1) + ')';
+    $('stageLabel').textContent = (isFinal ? 'FINAL' : (sd.name === '特別試験場' ? 'EX' : 'Stage' + (savedStage+1))) + ': ' + sd.name + ' (リベンジR' + (round+1) + ')';
   } else {
     $('stageLabel').textContent = 'リベンジ R' + (round+1);
   }
